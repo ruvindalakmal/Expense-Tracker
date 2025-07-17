@@ -19,6 +19,7 @@ import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleShee
 import { Dropdown } from 'react-native-element-dropdown';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import Input from "@/components/Input";
+import { createOrUpdateTransaction } from "@/services/transactioonService";
 
 
 const TransactionModal = () => {
@@ -55,15 +56,6 @@ const TransactionModal = () => {
         setShowDatePicker(Platform.OS == 'ios' ? true : false);
     };
 
-    // useEffect(() => {
-    //     if(oldTransaction?.id){
-    //         setTransaction({
-    //             name: oldTransaction.name,
-    //             image: oldTransaction.image,
-    //         });
-    //     }
-    // }, []);
-
     const onsubmit = async () => {
         const {type, amount , description , category , date , walletId , image} = transaction;
 
@@ -71,7 +63,6 @@ const TransactionModal = () => {
             Alert.alert("Transaction" , "Please fill all the fields");
             return ;
         }
-        console.log("Good to Go!");
 
         let transactionData : TransactionType = {
             type,
@@ -84,7 +75,16 @@ const TransactionModal = () => {
             uid : user?.uid
         };
         
-        console.log("Trasaction Data : " , transactionData);
+        // todo : include transaction id for updating
+        setLoading(true);
+        const res = await createOrUpdateTransaction(transactionData);
+        setLoading(false);
+
+        if(res.success){
+            router.back();
+        }else{
+            Alert.alert("Transaction" , res.msg);
+        }
     }
 
     const onDelete = async () => {
@@ -158,7 +158,7 @@ const TransactionModal = () => {
                                 selectedTextStyle={styles.dropdownSelectedText}
                                 iconStyle={styles.dropdownIcon}
                                 data={wallets.map((wallet) => ({
-                                    label: `${wallet?.name} ($${wallet.amount})`,
+                                    label: `${wallet?.name} (${wallet.amount})`,
                                     value: wallet?.id,
                                 }))}
                                 maxHeight={300}
