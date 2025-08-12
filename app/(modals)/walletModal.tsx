@@ -79,7 +79,7 @@ const WalletModal = () => {
     }
 
     const showDeleteAlert = () => {
-        Alert.alert("Delete Wallet", "Are you sure you want to delete this wallet? \n This action will remove all the transaction related to this wallet.", [
+        Alert.alert("Delete Wallet", "Are you sure you want to delete this wallet?", [
             {
                 text: "Cancel",
                 onPress: () => console.log("Delete cancelled"),

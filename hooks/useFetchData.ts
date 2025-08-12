@@ -3,7 +3,9 @@ import { collection, onSnapshot, query, QueryConstraint } from "firebase/firesto
 import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 
+
 const useFetchData = <T>(
+    
     collectionName : string,
     constraints : QueryConstraint[] = []
 ) => {
@@ -14,8 +16,8 @@ const useFetchData = <T>(
 
     useEffect(() => {
         if (!collectionName) return;
-        const collctionRef = collection(firestore,collectionName);
-        const q = query(collctionRef, ...constraints);
+        const collectionRef = collection(firestore,collectionName);
+        const q = query(collectionRef, ...constraints);
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const fetchedData = snapshot.docs.map(doc => {
